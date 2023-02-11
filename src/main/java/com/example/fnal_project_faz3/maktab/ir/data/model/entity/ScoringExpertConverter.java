@@ -1,10 +1,10 @@
-package com.example.fnal_project_faz3.maktab.ir.entity;
+package com.example.fnal_project_faz3.maktab.ir.data.model.entity;
 
-import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.ExpertScore;
+import com.example.fnal_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-import static com.example.fnal_project_faz3.maktab.ir.entity.enumeration.ExpertScore.*;
+import static com.example.fnal_project_faz3.maktab.ir.data.model.enumeration.ExpertScore.*;
 
 
 @Converter

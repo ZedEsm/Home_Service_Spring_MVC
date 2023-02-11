@@ -1,6 +1,6 @@
-package com.example.fnal_project_faz3.maktab.ir.entity;
+package com.example.fnal_project_faz3.maktab.ir.data.model.entity;
 
-import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.OrderStatus;
+import com.example.fnal_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
