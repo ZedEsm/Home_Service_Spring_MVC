@@ -23,6 +23,8 @@ public class SubService {
     Services service;
     private int basePrice;
     private String description;
+
+    @Column(nullable = false)
     private String name;
 
     @Override

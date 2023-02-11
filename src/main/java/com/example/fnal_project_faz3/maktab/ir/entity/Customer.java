@@ -13,9 +13,5 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id")
 public class Customer extends Users {
 
-    @OneToMany(mappedBy = "customer")
-    @ToString.Exclude
-    private List<Comment> comments;
-    private Long credit;
 
 }
