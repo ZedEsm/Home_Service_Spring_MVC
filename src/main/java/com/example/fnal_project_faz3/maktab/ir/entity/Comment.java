@@ -3,12 +3,14 @@ package com.example.fnal_project_faz3.maktab.ir.entity;
 import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.ExpertScore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
+@SuperBuilder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

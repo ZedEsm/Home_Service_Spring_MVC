@@ -1,6 +1,5 @@
-package com.example.fnal_project_faz3.maktab.ir.entity.enumeration;
+package com.example.fnal_project_faz3.maktab.ir.entity;
 
-import com.example.fnal_project_faz3.maktab.ir.entity.Expert;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;

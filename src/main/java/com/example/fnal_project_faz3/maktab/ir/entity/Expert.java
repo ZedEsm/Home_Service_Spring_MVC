@@ -1,10 +1,10 @@
 package com.example.fnal_project_faz3.maktab.ir.entity;
 
-import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.ExpertScore;
 import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,9 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
+@ToString(callSuper = true)
 public class Expert extends Users {
-    @Convert(converter = ScoringExpertConverter.class)
-    ExpertScore expertScore;
-
     @Enumerated(EnumType.STRING)
     ExpertStatus expertStatus;
 
@@ -32,11 +31,8 @@ public class Expert extends Users {
     List<SubService> subServiceList = new ArrayList<>();
 
     @OneToMany
-    List<Comment> commentList;
+    @ToString.Exclude
+    List<Comment> commentList = new ArrayList<>();
 
-    private Long credit;
-
-    public Expert(String firstName, String lastName, String emailAddress, String password) {
-        super(firstName, lastName, emailAddress, password);
-    }
+    Long credit;
 }

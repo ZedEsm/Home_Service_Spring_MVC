@@ -2,6 +2,7 @@ package com.example.fnal_project_faz3.maktab.ir.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,6 +14,8 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @ToString
+@SuperBuilder
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Users {
     @Id

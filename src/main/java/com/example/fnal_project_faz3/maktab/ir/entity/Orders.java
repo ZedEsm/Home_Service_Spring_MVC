@@ -4,43 +4,49 @@ import com.example.fnal_project_faz3.maktab.ir.entity.enumeration.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Builder
 @Table(name = "customer_order")
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    Long id;
+
+    @OneToMany
+    List<Offers> offersList = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    Address address;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Customer customer;
+    Customer customer;
 
     @Column(nullable = false)
-    private Long proposedPrice;
+    Long proposedPrice;
 
     @Column(nullable = false)
-    private String explanation;
+    String explanation;
 
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    @Temporal(value = TemporalType.DATE)
+    Date date;
 
-    @Column(nullable = false)
-    private String address;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    OrderStatus orderStatus;
 
-    @ManyToOne
-    Expert expert;
-
+    @OneToOne
+    SubService subService;
 
 }

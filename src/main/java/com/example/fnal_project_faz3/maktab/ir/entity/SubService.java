@@ -2,6 +2,7 @@ package com.example.fnal_project_faz3.maktab.ir.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @ToString
-
+@SuperBuilder
 public class SubService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
