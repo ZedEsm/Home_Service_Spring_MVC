@@ -12,8 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-@Builder
+//@Builder
 @Table(name = "customer_order")
 public class Orders {
     @Id

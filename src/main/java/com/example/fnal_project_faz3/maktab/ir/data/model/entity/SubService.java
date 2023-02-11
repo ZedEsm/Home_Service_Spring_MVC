@@ -11,9 +11,10 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
-@SuperBuilder
+//@SuperBuilder
 public class SubService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

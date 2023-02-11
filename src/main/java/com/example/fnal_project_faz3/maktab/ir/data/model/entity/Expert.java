@@ -15,16 +15,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+//@SuperBuilder
 @ToString(callSuper = true)
-public class Expert extends Users {
+public class Expert extends User {
     @Enumerated(EnumType.STRING)
     ExpertStatus expertStatus;
 
     @Basic(fetch = FetchType.LAZY)
     @Column(length = 300000)
     @ToString.Exclude
-    private byte[] personalPhoto;
+    byte[] personalPhoto;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
@@ -34,5 +34,5 @@ public class Expert extends Users {
     @ToString.Exclude
     List<Comment> commentList = new ArrayList<>();
 
-    Long credit;
+    double performance;
 }

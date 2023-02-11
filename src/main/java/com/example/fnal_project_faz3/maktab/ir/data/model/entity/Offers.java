@@ -10,13 +10,10 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+//@Builder
 public class Offers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

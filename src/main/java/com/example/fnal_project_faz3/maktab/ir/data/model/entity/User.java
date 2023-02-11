@@ -12,12 +12,13 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @SuperBuilder
-@MappedSuperclass
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Users {
+public class User {
     @Id
     @SequenceGenerator(name = "user_sequence",
             sequenceName = "user_sequence",
@@ -50,7 +51,7 @@ public class Users {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Users user = (Users) o;
+        User user = (User) o;
         return id != null && Objects.equals(id, user.id);
     }
 
@@ -59,7 +60,7 @@ public class Users {
         return getClass().hashCode();
     }
 
-    public Users(String firstName, String lastName, String emailAddress, String password) {
+    public User(String firstName, String lastName, String emailAddress, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;

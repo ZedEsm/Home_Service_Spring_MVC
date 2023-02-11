@@ -11,10 +11,11 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
-@SuperBuilder
-public class Customer extends Users {
+//@SuperBuilder
+public class Customer extends User {
     @OneToMany
     List<Orders> ordersList = new ArrayList<>();
 }

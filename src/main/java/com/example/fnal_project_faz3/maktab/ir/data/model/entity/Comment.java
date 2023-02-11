@@ -9,8 +9,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+//@SuperBuilder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
