@@ -31,7 +31,12 @@ public class AdminController {
         }
     }
 
+    @PutMapping(path = "/update/{adminId}")
+    public void updatePassword(@PathVariable("adminId") Integer id,
+                               @RequestParam(required = false) String password) throws AdminExistenceException {
+        adminService.updateAdminPasswordById(id, password);
 
+    }
 
     @DeleteMapping(path = "/delete/{adminId}")
     public void deleteStudent(@PathVariable("adminId") Integer id) {
@@ -41,7 +46,6 @@ public class AdminController {
             System.out.println(e.getMessage());
         }
     }
-
 
 
 }
