@@ -2,17 +2,19 @@ package com.example.fnal_project_faz3.maktab.ir.entity.enumeration;
 
 import com.example.fnal_project_faz3.maktab.ir.entity.Expert;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,5 +39,16 @@ public class Offers {
     @OneToOne
     Expert expert;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Offers offers = (Offers) o;
+        return id != null && Objects.equals(id, offers.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
