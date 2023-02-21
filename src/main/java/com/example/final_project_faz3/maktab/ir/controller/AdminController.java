@@ -10,7 +10,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
-
     private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
