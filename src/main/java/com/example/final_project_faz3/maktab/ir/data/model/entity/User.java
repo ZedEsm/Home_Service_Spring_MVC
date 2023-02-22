@@ -1,5 +1,7 @@
 package com.example.final_project_faz3.maktab.ir.data.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -40,8 +42,10 @@ public class User {
     @Column(length = 8)
     private String password;
 
+    @JsonProperty("callEndTime")
     @Temporal(value = TemporalType.DATE)
     @CreationTimestamp
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date registrationDate;
 
     @OneToOne
