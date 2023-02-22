@@ -1,19 +1,26 @@
 package com.example.final_project_faz3.maktab.ir.controller;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Services;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
 import com.example.final_project_faz3.maktab.ir.service.AdminService;
+import com.example.final_project_faz3.maktab.ir.service.ServicesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
     private final AdminService adminService;
+    private final ServicesService servicesService;
 
-    public AdminController(AdminService adminService) {
+    @Autowired
+    public AdminController(AdminService adminService, ServicesService servicesService) {
         this.adminService = adminService;
+        this.servicesService = servicesService;
     }
 
     @GetMapping("/getAdmin/{username}")
@@ -22,7 +29,7 @@ public class AdminController {
     }
 
     @PostMapping("/postAdmin")
-    public void registerStudent(@RequestBody Admin admin) {
+    public void registerAdmin(@RequestBody Admin admin) {
         try {
             adminService.registerAdmin(admin);
         } catch (AdminExistenceException e) {
@@ -37,14 +44,16 @@ public class AdminController {
 
     }
 
+    @GetMapping("/getServices")
+    public List<Services> getServices() {
+        return servicesService.getAllServices();
+    }
     @DeleteMapping(path = "/delete/{adminId}")
-    public void deleteStudent(@PathVariable("adminId") Integer id) {
+    public void deleteAdminByID(@PathVariable("adminId") Integer id) {
         try {
             adminService.deleteAdminById(id);
         } catch (AdminExistenceException e) {
             System.out.println(e.getMessage());
         }
     }
-
-
 }

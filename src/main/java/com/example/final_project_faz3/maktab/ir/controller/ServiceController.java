@@ -17,7 +17,7 @@ public class ServiceController {
     }
 
     @PostMapping("/postServices")
-    public void registerStudent(@RequestBody Services services) {
+    public void registerService(@RequestBody Services services) {
         serviceRepository.save(services);
     }
 }
