@@ -41,13 +41,13 @@ public class AdminController {
     public void updatePassword(@PathVariable("adminId") Integer id,
                                @RequestParam(required = false) String password) throws AdminExistenceException {
         adminService.updateAdminPasswordById(id, password);
-
     }
 
     @GetMapping("/getServices")
     public List<Services> getServices() {
         return servicesService.getAllServices();
     }
+
     @DeleteMapping(path = "/delete/{adminId}")
     public void deleteAdminByID(@PathVariable("adminId") Integer id) {
         try {

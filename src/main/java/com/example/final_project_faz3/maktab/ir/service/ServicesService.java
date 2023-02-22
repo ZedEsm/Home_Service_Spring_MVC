@@ -13,7 +13,8 @@ public class ServicesService {
     public ServicesService(ServiceRepository serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
-    public List<Services> getAllServices()  {
+
+    public List<Services> getAllServices() {
         return serviceRepository.findAll();
     }
 }
