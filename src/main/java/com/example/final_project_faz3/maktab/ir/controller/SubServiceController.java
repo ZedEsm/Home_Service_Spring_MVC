@@ -16,7 +16,7 @@ public class SubServiceController {
     }
 
     @PostMapping("/postSubservice")
-    public void registerStudent(@RequestBody SubService subService) {
+    public void registerSubService(@RequestBody SubService subService) {
         try {
             subServicesService.checkSubServiceExistence(subService);
             subServicesService.saveSubService(subService);
@@ -36,4 +36,16 @@ public class SubServiceController {
                                   @RequestParam(required = false) int price) throws SubServiceExistenceException {
         subServicesService.updatePrice(name, price);
     }
+
+    @GetMapping("/getSubServicesByName/{subByName}")
+    public SubService getSubServicesByName(@PathVariable String subByName) {
+        try {
+            return subServicesService.findSubServiceByName(subByName).get();
+        } catch (SubServiceExistenceException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+
 }

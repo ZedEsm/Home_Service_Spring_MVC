@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,12 +43,20 @@ public class SubServicesService {
 
     @Transactional
     public void updateDescription(String name,String description) throws SubServiceExistenceException {
-        SubService subService = subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!"));
-        subService.setDescription(description);
+        Optional<SubService> subServiceByName = findSubServiceByName(name);
+        subServiceByName.get().setDescription(description);
     }
     @Transactional
     public void updatePrice(String name,int price) throws SubServiceExistenceException {
         SubService subService = subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!"));
         subService.setBasePrice(price);
+    }
+
+    public List<SubService> getAllSubServices(){
+        return subServiceRepository.findAll();
+    }
+
+    public Optional<SubService> findSubServiceByName(String name) throws SubServiceExistenceException {
+        return Optional.ofNullable(subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!")));
     }
 }

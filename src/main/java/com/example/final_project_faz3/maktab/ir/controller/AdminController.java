@@ -2,9 +2,11 @@ package com.example.final_project_faz3.maktab.ir.controller;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Services;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
 import com.example.final_project_faz3.maktab.ir.service.AdminService;
 import com.example.final_project_faz3.maktab.ir.service.ServicesService;
+import com.example.final_project_faz3.maktab.ir.service.SubServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +18,14 @@ import java.util.Optional;
 public class AdminController {
     private final AdminService adminService;
     private final ServicesService servicesService;
+    private final SubServicesService subServicesService;
 
     @Autowired
-    public AdminController(AdminService adminService, ServicesService servicesService) {
+    public AdminController(AdminService adminService, ServicesService servicesService,
+                           SubServicesService subServicesService) {
         this.adminService = adminService;
         this.servicesService = servicesService;
+        this.subServicesService = subServicesService;
     }
 
     @GetMapping("/getAdmin/{username}")
@@ -55,5 +60,9 @@ public class AdminController {
         } catch (AdminExistenceException e) {
             System.out.println(e.getMessage());
         }
+    }
+    @GetMapping("/getSubServices")
+    public List<SubService> getSubServices() {
+        return subServicesService.getAllSubServices();
     }
 }
