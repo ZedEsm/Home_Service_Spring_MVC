@@ -22,6 +22,9 @@ public class SubServicesService {
     }
 
     public void checkSubServiceExistence(SubService subService) throws SubServiceExistenceException {
-        subServiceRepository.findByName(subService.getName()).orElseThrow(()->new SubServiceExistenceException("this subservice exist!"));
+        Optional<SubService> byName = subServiceRepository.findByName(subService.getName());
+        if(byName.isPresent()){
+          throw new SubServiceExistenceException("this subservice exist!");
+        }
     }
 }

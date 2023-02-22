@@ -1,8 +1,6 @@
 package com.example.final_project_faz3.maktab.ir.controller;
 
-import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
-import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
 import com.example.final_project_faz3.maktab.ir.exceptions.SubServiceExistenceException;
 import com.example.final_project_faz3.maktab.ir.service.SubServicesService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +19,15 @@ public class SubServiceController {
 
     @PostMapping("/postSubservice")
     public void registerStudent(@RequestBody SubService subService) {
+
         try {
             subServicesService.checkSubServiceExistence(subService);
             subServicesService.saveSubService(subService);
         } catch (SubServiceExistenceException e) {
             System.out.println(e.getMessage());
         }
+
+
 
     }
 }

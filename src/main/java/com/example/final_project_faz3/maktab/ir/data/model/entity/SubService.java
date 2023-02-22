@@ -20,7 +20,6 @@ public class SubService {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     Services service;
     private int basePrice;
     private String description;

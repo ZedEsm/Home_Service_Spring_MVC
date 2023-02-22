@@ -19,7 +19,7 @@ public class Services {
 
     private String serviceName;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<SubService> subServiceList;
+//    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+//    private List<SubService> subServiceList;
 
 }
