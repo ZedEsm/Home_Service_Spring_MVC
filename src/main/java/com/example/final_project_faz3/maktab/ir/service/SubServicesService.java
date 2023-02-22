@@ -45,4 +45,9 @@ public class SubServicesService {
         SubService subService = subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!"));
         subService.setDescription(description);
     }
+    @Transactional
+    public void updatePrice(String name,int price) throws SubServiceExistenceException {
+        SubService subService = subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!"));
+        subService.setBasePrice(price);
+    }
 }
