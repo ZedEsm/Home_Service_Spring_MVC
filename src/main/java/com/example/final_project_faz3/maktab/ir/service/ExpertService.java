@@ -39,8 +39,8 @@ public class ExpertService {
         expertRepository.save(expert);
     }
 
-    public Optional<Expert> findExpertById(Long id) {
-        return expertRepository.findById(id);
+    public Expert findExpertById(Long id) throws ExpertExistenceException {
+        return expertRepository.findById(id).orElseThrow(()->new ExpertExistenceException("expert does not exist!"));
     }
 
     @Transactional

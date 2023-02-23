@@ -3,6 +3,7 @@ package com.example.final_project_faz3.maktab.ir.service;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.AdminRepository;
 import com.example.final_project_faz3.maktab.ir.data.repository.ExpertRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
@@ -60,15 +61,15 @@ public class AdminService {
     }
 
     public void addExpertToSubService(Long exId, Long subId) throws ExpertConfirmationException, SubServiceExistenceException, ExpertExistenceException {
-        Optional<Expert> expertById = expertService.findExpertById(exId);
+        Expert expertById = expertService.findExpertById(exId);
         Optional<SubService> subServiceById = subServicesService.findSubServiceById(subId);
-//        if(expertById.get().getExpertStatus().equals(ExpertStatus.NEW)){
-//            throw new ExpertConfirmationException("this expert does not confirmed yet by admin!");
-//        }
-        if (expertById.get().getSubServiceList().stream().anyMatch(subService -> subService.getName().equals(subServiceById.get().getName()))) {
+        if(expertById.getExpertStatus().equals(ExpertStatus.NEW)){
+            throw new ExpertConfirmationException("this expert does not confirmed yet by admin!");
+        }
+        if (expertById.getSubServiceList().stream().anyMatch(subService -> subService.getName().equals(subServiceById.get().getName()))) {
             throw new SubServiceExistenceException("this subservice already exist!");
         }
-        expertService.updateExpertById(expertById.get().getId(), subServiceById.get());
+        expertService.updateExpertById(expertById.getId(), subServiceById.get());
     }
 
     public void deleteExpertFromSubservice(Long id) throws ExpertExistenceException {
@@ -76,6 +77,15 @@ public class AdminService {
         if (expert.isPresent()) {
             expertRepository.deleteById(id);
         }
+    }
+
+    @Transactional
+    public void confirmExpertStatus(Long expertId) throws ExpertExistenceException {
+        Expert expertById = expertService.findExpertById(expertId);
+        if(expertById.getExpertStatus().equals(ExpertStatus.NEW)){
+            expertById.setExpertStatus(ExpertStatus.BEEN_CONFIRMED);
+        }
+
     }
 
 }
