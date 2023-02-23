@@ -15,13 +15,13 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public void saveCustomer(Customer customer){
+    public void saveCustomer(Customer customer) {
         Validation.validateEmail(customer.getEmailAddress());
         Validation.validatePassword(customer.getPassword());
         customerRepository.save(customer);
     }
 
-    public Optional<Customer> findCustomerById(Long id){
+    public Optional<Customer> findCustomerById(Long id) {
         return customerRepository.findById(id);
     }
 }

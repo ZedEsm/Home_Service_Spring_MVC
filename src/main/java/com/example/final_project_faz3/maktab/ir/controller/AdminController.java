@@ -64,6 +64,7 @@ public class AdminController {
             System.out.println(e.getMessage());
         }
     }
+
     @GetMapping("/getSubServices")
     public List<SubService> getSubServices() {
         return subServicesService.getAllSubServices();
@@ -71,10 +72,19 @@ public class AdminController {
 
     @PostMapping("/addExpertToSubService/{exId}")
     public void addExpertToSubService(@PathVariable Long exId,
-                                      @RequestParam(required = false) Long subId){
+                                      @RequestParam(required = false) Long subId) {
         try {
-            adminService.addExpertToSubService(exId,subId);
+            adminService.addExpertToSubService(exId, subId);
         } catch (ExpertConfirmationException | SubServiceExistenceException | ExpertExistenceException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "/deleteExpertFromSubService/{expertId}")
+    public void deleteExpertFromSubService(@PathVariable("expertId") Long id) {
+        try {
+            adminService.deleteExpertFromSubservice(id);
+        } catch (ExpertExistenceException e) {
             System.out.println(e.getMessage());
         }
     }

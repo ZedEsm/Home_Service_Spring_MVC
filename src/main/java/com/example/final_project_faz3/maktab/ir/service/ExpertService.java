@@ -39,7 +39,7 @@ public class ExpertService {
         expertRepository.save(expert);
     }
 
-    public Optional<Expert> findExpertById(Long id){
+    public Optional<Expert> findExpertById(Long id) {
         return expertRepository.findById(id);
     }
 

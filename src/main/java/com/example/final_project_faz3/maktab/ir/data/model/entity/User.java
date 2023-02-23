@@ -45,7 +45,7 @@ public class User {
     @JsonProperty("callEndTime")
     @Temporal(value = TemporalType.DATE)
     @CreationTimestamp
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date registrationDate;
 
     @OneToOne

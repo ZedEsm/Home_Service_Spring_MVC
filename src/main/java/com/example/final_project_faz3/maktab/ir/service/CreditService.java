@@ -21,13 +21,14 @@ public class CreditService {
         this.creditRepository = creditRepository;
         this.customerService = customerService;
     }
-    public void saveCredit(Credit credit){
+
+    public void saveCredit(Credit credit) {
         creditRepository.save(credit);
     }
 
-    public void saveCustomerCredit(Long id,Credit credit){
+    public void saveCustomerCredit(Long id, Credit credit) {
         Optional<Customer> customer = customerService.findCustomerById(id);
-        if(customer.isPresent()){
+        if (customer.isPresent()) {
             customer.get().setCredit(credit);
             creditRepository.save(credit);
         }

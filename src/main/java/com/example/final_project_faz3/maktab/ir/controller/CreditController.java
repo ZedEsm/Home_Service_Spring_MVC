@@ -20,6 +20,6 @@ public class CreditController {
 
     @PostMapping("/postCreditCustomer/{ID}")
     public void registerCredit(@RequestBody Credit credit, @PathVariable Long ID) {
-        creditService.saveCustomerCredit(ID,credit);
+        creditService.saveCustomerCredit(ID, credit);
     }
 }

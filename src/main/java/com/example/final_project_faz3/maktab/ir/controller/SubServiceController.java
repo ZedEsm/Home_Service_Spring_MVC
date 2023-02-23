@@ -31,9 +31,10 @@ public class SubServiceController {
                                   @RequestParam(required = false) String description) throws SubServiceExistenceException {
         subServicesService.updateDescription(name, description);
     }
+
     @PutMapping(path = "/updatePrice/{subName}")
     public void updatePrice(@PathVariable("subName") String name,
-                                  @RequestParam(required = false) int price) throws SubServiceExistenceException {
+                            @RequestParam(required = false) int price) throws SubServiceExistenceException {
         subServicesService.updatePrice(name, price);
     }
 

@@ -3,8 +3,8 @@ package com.example.final_project_faz3.maktab.ir.service;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
-import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.AdminRepository;
+import com.example.final_project_faz3.maktab.ir.data.repository.ExpertRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertConfirmationException;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
@@ -22,11 +22,14 @@ public class AdminService {
 
     private final ExpertService expertService;
     private final AdminRepository adminRepository;
+    private final ExpertRepository expertRepository;
 
-    public AdminService(SubServicesService subServicesService, ExpertService expertService, AdminRepository adminRepository) {
+    public AdminService(SubServicesService subServicesService, ExpertService expertService, AdminRepository adminRepository,
+                        ExpertRepository expertRepository) {
         this.subServicesService = subServicesService;
         this.expertService = expertService;
         this.adminRepository = adminRepository;
+        this.expertRepository = expertRepository;
     }
 
     public void registerAdmin(Admin admin) throws AdminExistenceException {
@@ -56,16 +59,23 @@ public class AdminService {
 
     }
 
-    public void addExpertToSubService(Long exId,Long subId) throws ExpertConfirmationException, SubServiceExistenceException, ExpertExistenceException {
+    public void addExpertToSubService(Long exId, Long subId) throws ExpertConfirmationException, SubServiceExistenceException, ExpertExistenceException {
         Optional<Expert> expertById = expertService.findExpertById(exId);
         Optional<SubService> subServiceById = subServicesService.findSubServiceById(subId);
 //        if(expertById.get().getExpertStatus().equals(ExpertStatus.NEW)){
 //            throw new ExpertConfirmationException("this expert does not confirmed yet by admin!");
 //        }
-        if(expertById.get().getSubServiceList().stream().anyMatch(subService->subService.getName().equals(subServiceById.get().getName()))){
+        if (expertById.get().getSubServiceList().stream().anyMatch(subService -> subService.getName().equals(subServiceById.get().getName()))) {
             throw new SubServiceExistenceException("this subservice already exist!");
         }
-        expertService.updateExpertById(expertById.get().getId(),subServiceById.get());
+        expertService.updateExpertById(expertById.get().getId(), subServiceById.get());
+    }
+
+    public void deleteExpertFromSubservice(Long id) throws ExpertExistenceException {
+        Optional<Expert> expert = Optional.ofNullable(expertRepository.findExpertById(id).orElseThrow(() -> new ExpertExistenceException("this expert does not exist!")));
+        if (expert.isPresent()) {
+            expertRepository.deleteById(id);
+        }
     }
 
 }

@@ -42,17 +42,18 @@ public class SubServicesService {
     }
 
     @Transactional
-    public void updateDescription(String name,String description) throws SubServiceExistenceException {
+    public void updateDescription(String name, String description) throws SubServiceExistenceException {
         Optional<SubService> subServiceByName = findSubServiceByName(name);
         subServiceByName.get().setDescription(description);
     }
+
     @Transactional
-    public void updatePrice(String name,int price) throws SubServiceExistenceException {
+    public void updatePrice(String name, int price) throws SubServiceExistenceException {
         SubService subService = subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!"));
         subService.setBasePrice(price);
     }
 
-    public List<SubService> getAllSubServices(){
+    public List<SubService> getAllSubServices() {
         return subServiceRepository.findAll();
     }
 
@@ -60,7 +61,7 @@ public class SubServicesService {
         return Optional.ofNullable(subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!")));
     }
 
-    public Optional<SubService> findSubServiceById(Long id){
+    public Optional<SubService> findSubServiceById(Long id) {
         return subServiceRepository.findById(id);
     }
 }

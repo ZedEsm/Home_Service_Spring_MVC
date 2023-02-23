@@ -14,7 +14,7 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public void saveComment(Comment comment){
+    public void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
 }
