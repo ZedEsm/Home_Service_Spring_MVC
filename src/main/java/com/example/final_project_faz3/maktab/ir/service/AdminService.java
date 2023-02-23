@@ -1,8 +1,14 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.AdminRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.ExpertConfirmationException;
+import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.SubServiceExistenceException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -11,9 +17,15 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
+
+    private final SubServicesService subServicesService;
+
+    private final ExpertService expertService;
     private final AdminRepository adminRepository;
 
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(SubServicesService subServicesService, ExpertService expertService, AdminRepository adminRepository) {
+        this.subServicesService = subServicesService;
+        this.expertService = expertService;
         this.adminRepository = adminRepository;
     }
 
@@ -42,6 +54,18 @@ public class AdminService {
         Validation.validatePassword(newPassword);
         admin.setPassword(newPassword);
 
+    }
+
+    public void addExpertToSubService(Long exId,Long subId) throws ExpertConfirmationException, SubServiceExistenceException, ExpertExistenceException {
+        Optional<Expert> expertById = expertService.findExpertById(exId);
+        Optional<SubService> subServiceById = subServicesService.findSubServiceById(subId);
+//        if(expertById.get().getExpertStatus().equals(ExpertStatus.NEW)){
+//            throw new ExpertConfirmationException("this expert does not confirmed yet by admin!");
+//        }
+        if(expertById.get().getSubServiceList().stream().anyMatch(subService->subService.getName().equals(subServiceById.get().getName()))){
+            throw new SubServiceExistenceException("this subservice already exist!");
+        }
+        expertService.updateExpertById(expertById.get().getId(),subServiceById.get());
     }
 
 }

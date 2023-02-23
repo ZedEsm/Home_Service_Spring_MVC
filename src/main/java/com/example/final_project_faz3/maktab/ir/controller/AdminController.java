@@ -4,6 +4,9 @@ import com.example.final_project_faz3.maktab.ir.data.model.entity.Admin;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Services;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
 import com.example.final_project_faz3.maktab.ir.exceptions.AdminExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.ExpertConfirmationException;
+import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.SubServiceExistenceException;
 import com.example.final_project_faz3.maktab.ir.service.AdminService;
 import com.example.final_project_faz3.maktab.ir.service.ServicesService;
 import com.example.final_project_faz3.maktab.ir.service.SubServicesService;
@@ -64,5 +67,15 @@ public class AdminController {
     @GetMapping("/getSubServices")
     public List<SubService> getSubServices() {
         return subServicesService.getAllSubServices();
+    }
+
+    @PostMapping("/addExpertToSubService/{exId}")
+    public void addExpertToSubService(@PathVariable Long exId,
+                                      @RequestParam(required = false) Long subId){
+        try {
+            adminService.addExpertToSubService(exId,subId);
+        } catch (ExpertConfirmationException | SubServiceExistenceException | ExpertExistenceException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

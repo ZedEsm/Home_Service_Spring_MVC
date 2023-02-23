@@ -59,4 +59,8 @@ public class SubServicesService {
     public Optional<SubService> findSubServiceByName(String name) throws SubServiceExistenceException {
         return Optional.ofNullable(subServiceRepository.findByName(name).orElseThrow(() -> new SubServiceExistenceException("this subservice does not exist!")));
     }
+
+    public Optional<SubService> findSubServiceById(Long id){
+        return subServiceRepository.findById(id);
+    }
 }
