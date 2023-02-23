@@ -1,5 +1,6 @@
 package com.example.final_project_faz3.maktab.ir.data.model.entity;
 
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,6 +18,9 @@ import java.util.List;
 //@SuperBuilder
 @ToString(callSuper = true)
 public class Expert extends User {
+    @Convert(converter = ScoringExpertConverter.class)
+    ExpertScore expertScore;
+
     @Enumerated(EnumType.STRING)
     ExpertStatus expertStatus;
 

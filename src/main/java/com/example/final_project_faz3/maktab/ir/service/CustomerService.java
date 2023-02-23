@@ -5,6 +5,8 @@ import com.example.final_project_faz3.maktab.ir.data.repository.CustomerReposito
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
@@ -17,5 +19,9 @@ public class CustomerService {
         Validation.validateEmail(customer.getEmailAddress());
         Validation.validatePassword(customer.getPassword());
         customerRepository.save(customer);
+    }
+
+    public Optional<Customer> findCustomerById(Long id){
+        return customerRepository.findById(id);
     }
 }
