@@ -27,7 +27,6 @@ public class Orders {
     Address address;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     Customer customer;
 
     @Column(nullable = false)
