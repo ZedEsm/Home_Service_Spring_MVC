@@ -12,11 +12,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -34,7 +29,7 @@ public class OrderService {
     @Transactional
 
     public void submitOrder(Long customerId,Orders orders,Long subServiceId) throws OrderExistenceException, OrderRegistrationFailedException, UnTimeOrderException {
-        Optional<Orders> orderById = findOrderById(orders);
+        Optional<Orders> orderById = findOrderById(orders.getId());
         if(orderById.isPresent()){
            throw new OrderExistenceException("this order already exist!");
         }
@@ -62,8 +57,8 @@ public class OrderService {
         }
 
     }
-    public Optional<Orders> findOrderById(Orders orders){
-        return orderRepository.findById(orders.getId());
+    public Optional<Orders> findOrderById(Long id){
+        return orderRepository.findById(id);
 
     }
 

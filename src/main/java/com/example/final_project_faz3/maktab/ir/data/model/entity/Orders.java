@@ -1,6 +1,8 @@
 package com.example.final_project_faz3.maktab.ir.data.model.entity;
 
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +39,8 @@ public class Orders {
 
 
     @Temporal(value = TemporalType.DATE)
+    @JsonProperty("callEndTime")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
     Date date;
 
 

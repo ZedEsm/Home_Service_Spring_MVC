@@ -1,10 +1,13 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Offers;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Orders;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.ExpertRepository;
+import com.example.final_project_faz3.maktab.ir.data.repository.OfferRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import jakarta.transaction.Transactional;
@@ -16,10 +19,12 @@ import java.util.Optional;
 @Service
 public class ExpertService {
     private final ExpertRepository expertRepository;
+    private final OfferRepository offerRepository;
 
     @Autowired
-    public ExpertService(ExpertRepository expertRepository) {
+    public ExpertService(ExpertRepository expertRepository, OfferRepository offerRepository) {
         this.expertRepository = expertRepository;
+        this.offerRepository = offerRepository;
     }
 
     public void saveExpert(Expert expert) throws ExpertExistenceException {
@@ -47,5 +52,10 @@ public class ExpertService {
     public void updateExpertById(Long id, SubService subService) throws ExpertExistenceException {
         Expert expert = expertRepository.findById(id).orElseThrow(() -> new ExpertExistenceException("expert does not exist!"));
         expert.getSubServiceList().add(subService);
+    }
+    public void addOffer(Offers offers, Expert expert, Orders orders){
+        orders.getOffersList().add(offers);
+        offers.setExpert(expert);
+        offerRepository.save(offers);
     }
 }
