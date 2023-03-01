@@ -77,10 +77,10 @@ public class CustomerController {
     @PutMapping(path = "/payOrder/{customerId}")
     public void payOrder(@PathVariable("customerId") Long customerId, @RequestParam(required = false) Long expertId, @RequestParam(required = false) Long orderId) {
         try {
-            Customer customer_not_found_exception = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
-            Orders order_not_found = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
+            Customer customer = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
+            Orders order = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
             Expert expert = expertService.findExpertById(expertId);
-            customerService.payOrderByCustomer(customer_not_found_exception,order_not_found,expert);
+            customerService.payOrderByCustomer(customer,order,expert);
 
         } catch (CustomerNotFoundException | OrderExistenceException | ExpertExistenceException |
                  CreditNotEnoughException e) {

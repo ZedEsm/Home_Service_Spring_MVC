@@ -33,13 +33,15 @@ public class CustomerService {
     public boolean payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
         Long credit = customer.getCredit().getBalance();
         Long proposedPrice = orders.getProposedPrice();
-        System.out.println(expert);
-        System.out.println(expert.getCredit().getBalance());
+
         if (credit > proposedPrice) {
             long l = credit - proposedPrice;
             customer.getCredit().setBalance(l);
-            expert.getCredit().setBalance(orders.getProposedPrice() + expert.getCredit().getBalance());
+            System.out.println(proposedPrice);
+            System.out.println(l);
+            expert.getCredit().setBalance(proposedPrice + expert.getCredit().getBalance());
             orders.setOrderStatus(OrderStatus.PAID);
+            System.out.println(expert.getCredit()+" **** "+customer.getCredit());
             return true;
         }
         throw new CreditNotEnoughException("credit not enough!!");
