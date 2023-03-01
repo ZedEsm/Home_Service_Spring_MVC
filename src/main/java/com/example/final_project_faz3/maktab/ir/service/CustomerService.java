@@ -1,8 +1,13 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Customer;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.Orders;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
+import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,5 +28,20 @@ public class CustomerService {
 
     public Optional<Customer> findCustomerById(Long id) {
         return customerRepository.findById(id);
+    }
+    @Transactional
+    public boolean payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
+        Long credit = customer.getCredit().getBalance();
+        Long proposedPrice = orders.getProposedPrice();
+        System.out.println(expert);
+        System.out.println(expert.getCredit().getBalance());
+        if (credit > proposedPrice) {
+            long l = credit - proposedPrice;
+            customer.getCredit().setBalance(l);
+            expert.getCredit().setBalance(orders.getProposedPrice() + expert.getCredit().getBalance());
+            orders.setOrderStatus(OrderStatus.PAID);
+            return true;
+        }
+        throw new CreditNotEnoughException("credit not enough!!");
     }
 }

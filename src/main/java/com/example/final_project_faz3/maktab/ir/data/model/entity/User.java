@@ -43,7 +43,7 @@ public class User {
     private String password;
 
     @JsonProperty("callEndTime")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
     @Temporal(value = TemporalType.DATE)
     @CreationTimestamp
     private Date registrationDate;

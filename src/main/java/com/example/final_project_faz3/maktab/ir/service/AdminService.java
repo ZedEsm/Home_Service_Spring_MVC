@@ -63,7 +63,7 @@ public class AdminService {
     public void addExpertToSubService(Long exId, Long subId) throws ExpertConfirmationException, SubServiceExistenceException, ExpertExistenceException {
         Expert expertById = expertService.findExpertById(exId);
         Optional<SubService> subServiceById = subServicesService.findSubServiceById(subId);
-        if(expertById.getExpertStatus().equals(ExpertStatus.NEW)){
+        if (expertById.getExpertStatus().equals(ExpertStatus.NEW)) {
             throw new ExpertConfirmationException("this expert does not confirmed yet by admin!");
         }
         if (expertById.getSubServiceList().stream().anyMatch(subService -> subService.getName().equals(subServiceById.get().getName()))) {
@@ -82,7 +82,7 @@ public class AdminService {
     @Transactional
     public void confirmExpertStatus(Long expertId) throws ExpertExistenceException {
         Expert expertById = expertService.findExpertById(expertId);
-        if(expertById.getExpertStatus().equals(ExpertStatus.NEW)){
+        if (expertById.getExpertStatus().equals(ExpertStatus.NEW)) {
             expertById.setExpertStatus(ExpertStatus.BEEN_CONFIRMED);
         }
 

@@ -28,8 +28,11 @@ public class Offers {
     private Long proposedPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date timeToStartWork;
 
+
+    @Transient
     private Duration durationOfWork;
 
     @OneToOne
@@ -46,5 +49,9 @@ public class Offers {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Duration getDurationOfWork() {
+        return Duration.between(timeToStartWork.toInstant(), date.toInstant());
     }
 }

@@ -22,7 +22,7 @@ public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal balance;
+    private Long balance;
 
     @Override
     public boolean equals(Object o) {

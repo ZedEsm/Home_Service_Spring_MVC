@@ -1,9 +1,7 @@
 package com.example.final_project_faz3.maktab.ir.controller;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
-import com.example.final_project_faz3.maktab.ir.exceptions.OrderExistenceException;
-import com.example.final_project_faz3.maktab.ir.exceptions.OrderRegistrationFailedException;
-import com.example.final_project_faz3.maktab.ir.exceptions.UnTimeOrderException;
+import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +22,18 @@ public class CustomerController {
 
     private final AddressService addressService;
 
+    private final ExpertService expertService;
+
+
+
     @Autowired
-    public CustomerController(CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService) {
+    public CustomerController(CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService) {
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.servicesService = servicesService;
         this.orderService = orderService;
         this.addressService = addressService;
+        this.expertService = expertService;
     }
 
     @PostMapping("/post")
@@ -60,18 +63,31 @@ public class CustomerController {
     @PostMapping("/postOrder/{customerId}")
     public void submitOrder(@RequestBody Orders orders, @PathVariable Long customerId, @RequestParam(required = false) Long subId) {
         try {
-            orderService.submitOrder(customerId,orders,subId);
+            orderService.submitOrder(customerId, orders, subId);
         } catch (OrderExistenceException | OrderRegistrationFailedException | UnTimeOrderException e) {
             System.out.println(e.getMessage());
         }
     }
 
     @PostMapping("/postAddress")
-    public void postAddress(@RequestBody Address address ) {
+    public void postAddress(@RequestBody Address address) {
         addressService.saveAddress(address);
-
     }
 
+    @PutMapping(path = "/payOrder/{customerId}")
+    public void payOrder(@PathVariable("customerId") Long customerId, @RequestParam(required = false) Long expertId, @RequestParam(required = false) Long orderId) {
+        try {
+            Customer customer_not_found_exception = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
+            Orders order_not_found = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
+            Expert expert = expertService.findExpertById(expertId);
+            customerService.payOrderByCustomer(customer_not_found_exception,order_not_found,expert);
+
+        } catch (CustomerNotFoundException | OrderExistenceException | ExpertExistenceException |
+                 CreditNotEnoughException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
 
 
 

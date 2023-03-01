@@ -37,12 +37,6 @@ public class SubService {
                 '}';
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        SubService subService = (SubService) o;
-//        return subService.description.equals(this.description) && subService.basePrice == this.basePrice;
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

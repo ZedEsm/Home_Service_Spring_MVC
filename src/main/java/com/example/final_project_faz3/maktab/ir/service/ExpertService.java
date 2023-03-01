@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -45,7 +47,7 @@ public class ExpertService {
     }
 
     public Expert findExpertById(Long id) throws ExpertExistenceException {
-        return expertRepository.findById(id).orElseThrow(()->new ExpertExistenceException("expert does not exist!"));
+        return expertRepository.findById(id).orElseThrow(() -> new ExpertExistenceException("expert does not exist!"));
     }
 
     @Transactional
@@ -53,9 +55,11 @@ public class ExpertService {
         Expert expert = expertRepository.findById(id).orElseThrow(() -> new ExpertExistenceException("expert does not exist!"));
         expert.getSubServiceList().add(subService);
     }
-    public void addOffer(Offers offers, Expert expert, Orders orders){
+
+    public void addOffer(Offers offers, Expert expert, Orders orders) {
         orders.getOffersList().add(offers);
         offers.setExpert(expert);
         offerRepository.save(offers);
+
     }
 }

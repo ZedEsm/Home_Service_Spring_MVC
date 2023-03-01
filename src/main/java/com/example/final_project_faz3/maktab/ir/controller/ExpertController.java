@@ -37,10 +37,11 @@ public class ExpertController {
             System.out.println(e.getMessage());
         }
     }
+
     @PostMapping("/postOffer/{expertId}")
-    public void submitOffer(@PathVariable Long expertId, @RequestBody Offers offers,@RequestParam(required = false) Long orderId) throws ExpertExistenceException, OrderExistenceException {
-        Expert expert= expertRepository.findExpertById(expertId).orElseThrow(() -> new ExpertExistenceException("expert not found"));
+    public void submitOffer(@PathVariable Long expertId, @RequestBody Offers offers, @RequestParam(required = false) Long orderId) throws ExpertExistenceException, OrderExistenceException {
+        Expert expert = expertRepository.findExpertById(expertId).orElseThrow(() -> new ExpertExistenceException("expert not found"));
         Orders orders = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
-        expertService.addOffer(offers,expert,orders);
+        expertService.addOffer(offers, expert, orders);
     }
 }
