@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
-//@SuperBuilder
 public class Customer extends User {
     @OneToMany
     List<Orders> ordersList = new ArrayList<>();

@@ -18,10 +18,4 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-
-    @PostMapping("postComment")
-    public void saveComment(@RequestBody Comment comment) {
-        commentService.saveComment(comment);
-    }
-
 }

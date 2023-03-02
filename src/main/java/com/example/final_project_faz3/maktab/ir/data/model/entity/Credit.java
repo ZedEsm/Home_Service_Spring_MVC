@@ -17,7 +17,6 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-//@Builder
 public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//todo:credit add to customer
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
@@ -23,7 +22,6 @@ public class CustomerController {
     private final AddressService addressService;
 
     private final ExpertService expertService;
-
 
 
     @Autowired
@@ -80,15 +78,21 @@ public class CustomerController {
             Customer customer = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
             Orders order = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
             Expert expert = expertService.findExpertById(expertId);
-            customerService.payOrderByCustomer(customer,order,expert);
+            customerService.payOrderByCustomer(customer, order, expert);
 
         } catch (CustomerNotFoundException | OrderExistenceException | ExpertExistenceException |
                  CreditNotEnoughException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
-
-
+    @PostMapping("/addComment/{expertId}")
+    public void addComment(@RequestBody Comment comment, @PathVariable Long expertId, @RequestParam Long subserviceId) {
+        //, customerId
+        try{
+            customerService.saveComment(comment, expertId, subserviceId);
+        } catch (ExpertExistenceException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

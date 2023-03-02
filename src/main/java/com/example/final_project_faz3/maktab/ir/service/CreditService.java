@@ -14,7 +14,6 @@ import java.util.Optional;
 public class CreditService {
     private final CreditRepository creditRepository;
     private final CustomerService customerService;
-
     private final ExpertService expertService;
 
     @Autowired
@@ -24,7 +23,7 @@ public class CreditService {
         this.expertService = expertService;
     }
 
-    public void saveExpertCredit(Long id,Credit credit) throws ExpertExistenceException {
+    public void saveExpertCredit(Long id, Credit credit) throws ExpertExistenceException {
         Expert expertById = expertService.findExpertById(id);
         expertById.setCredit(credit);
         creditRepository.save(credit);
