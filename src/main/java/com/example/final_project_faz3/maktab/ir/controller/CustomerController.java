@@ -88,11 +88,15 @@ public class CustomerController {
 
     @PostMapping("/addComment/{expertId}")
     public void addComment(@RequestBody Comment comment, @PathVariable Long expertId, @RequestParam Long subserviceId) {
-        //, customerId
-        try{
+        try {
             customerService.saveComment(comment, expertId, subserviceId);
         } catch (ExpertExistenceException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @PutMapping(path = "/changePassword/{customerId}")
+    public void changePassword(@PathVariable("customerId") Long customerId, @RequestParam(required = false) String password) {
+        customerService.changePassword(customerId, password);
     }
 }

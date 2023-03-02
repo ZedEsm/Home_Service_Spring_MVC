@@ -57,14 +57,23 @@ public class CustomerService {
 
     public void saveComment(Comment comment, Long expertId, Long subSerViceId) throws ExpertExistenceException {
 //        Optional<Customer> customerById = customerService.findCustomerById(customerId);
-             Expert expert = expertService.findExpertById(expertId);
+        Expert expert = expertService.findExpertById(expertId);
         //     if (expert.getSubServiceList().stream().anyMatch(subservice -> subservice.getId().equals(subSerViceId))) {
         //if (customerById.get().getOrdersList().stream().anyMatch(orders -> orders.getSubService().getId().equals(subSerViceId))) {
-         expert.setExpertScore(comment.getExpertScore());
-                 expert.getCommentList().add(comment);
+        expert.setExpertScore(comment.getExpertScore());
+        expert.getCommentList().add(comment);
         commentService.saveComment(comment);
         //   }
 
         //    }
+    }
+
+    @Transactional
+    public void changePassword(Long customerId, String password) {
+        Optional<Customer> customerById = findCustomerById(customerId);
+        if (customerById.isPresent()) {
+            Validation.validatePassword(password);
+            customerById.get().setPassword(password);
+        }
     }
 }
