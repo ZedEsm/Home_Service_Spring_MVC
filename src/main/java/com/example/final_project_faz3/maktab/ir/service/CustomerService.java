@@ -19,7 +19,6 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CommentService commentService;
-
     private final ExpertService expertService;
 
     @Autowired

@@ -6,27 +6,30 @@ import com.example.final_project_faz3.maktab.ir.data.model.entity.Orders;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.SubService;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertStatus;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.ExpertRepository;
-import com.example.final_project_faz3.maktab.ir.data.repository.OfferRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class ExpertService {
     private final ExpertRepository expertRepository;
-    private final OfferRepository offerRepository;
+    private final OfferService offerService;
 
     @Autowired
-    public ExpertService(ExpertRepository expertRepository, OfferRepository offerRepository) {
+    public ExpertService(ExpertRepository expertRepository, OfferService offerService) {
         this.expertRepository = expertRepository;
-        this.offerRepository = offerRepository;
+
+        this.offerService = offerService;
     }
 
     public void saveExpert(Expert expert) throws ExpertExistenceException {
@@ -57,9 +60,21 @@ public class ExpertService {
     }
 
     public void addOffer(Offers offers, Expert expert, Orders orders) {
-        orders.getOffersList().add(offers);
-        offers.setExpert(expert);
-        offerRepository.save(offers);
+        System.out.println("********");
+        if (expert.getSubServiceList().stream().anyMatch(sub -> sub.getName().equals(orders.getSubService().getName()))) {
+            if (checkExpertStatus(orders)) {
+                if (offers.getProposedPrice() > orders.getSubService().getBasePrice()) {
+                    orders.setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
+                    orders.getOffersList().add(offers);
+                    offers.setExpert(expert);
+                    offerService.saveOffer(offers);
+                }
 
+            }
+        }
+    }
+
+    private boolean checkExpertStatus(Orders orders) {
+        return orders.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_PROPOSE) | orders.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION);
     }
 }

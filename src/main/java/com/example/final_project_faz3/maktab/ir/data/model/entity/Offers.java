@@ -54,4 +54,8 @@ public class Offers {
     public Duration getDurationOfWork() {
         return Duration.between(timeToStartWork.toInstant(), date.toInstant());
     }
+
+    public Date getTimeToStartWork() {
+        return timeToStartWork;
+    }
 }

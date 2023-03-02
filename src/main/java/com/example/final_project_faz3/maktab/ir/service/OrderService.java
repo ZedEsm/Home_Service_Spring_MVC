@@ -42,9 +42,7 @@ public class OrderService {
         LocalDateTime localDateTime = LocalDate.now().atStartOfDay();
         ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
         Date date = Date.from(zonedDateTime.toInstant());
-
         orders.setOrderStatus(OrderStatus.WAITING_EXPERT_PROPOSE);
-
         Optional<Customer> customerById = customerService.findCustomerById(customerId);
         Optional<SubService> subService = subServicesService.findSubServiceById(subServiceId);
         if (customerById.isPresent()) {
