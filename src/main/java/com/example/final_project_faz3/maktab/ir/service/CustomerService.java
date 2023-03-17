@@ -6,6 +6,7 @@ import com.example.final_project_faz3.maktab.ir.data.repository.CustomerReposito
 import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
 import com.example.final_project_faz3.maktab.ir.exceptions.OrderExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.TimeAfterException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
 import jakarta.transaction.Transactional;
@@ -95,6 +96,34 @@ public class CustomerService {
     @Transactional
     public void chooseOffer(Optional<Orders> orders, Optional<Offers> offers) throws OrderExistenceException {
 
+        Orders orders1 = checkOrder(orders);
+        if (!(orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_PROPOSE)
+                || orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION)))
+            throw new OrderExistenceException("order status not correct!");
+        boolean b = orders1.getOffersList().stream().anyMatch(ofr -> ofr.getExpert().equals(offers.get().getExpert()));
+        if (b) {
+            orders1.setOrderStatus(OrderStatus.WAITING_EXPERT_COMING);
+        }
+    }
+
+    @Transactional
+
+    public void changeOrderStatus(Optional<Orders> orders, Optional<Offers> offers) throws OrderExistenceException, TimeAfterException {
+
+        Orders orders1 = checkOrder(orders);
+        if (!(orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_COMING)))
+            throw new OrderExistenceException("order status not correct!");
+        boolean anyMatch = orders1.getOffersList().stream().anyMatch(ofr -> ofr.getExpert().equals(offers.get().getExpert()));
+        if (anyMatch) {
+            Date now = new Date();
+            if (offers.get().getTimeToStartWork().after(now))
+                throw new TimeAfterException("time is after exception");
+            orders1.setOrderStatus(OrderStatus.STARTING);
+            offers.get().setTimeToStartWork(now);
+        }
+    }
+
+    private Orders checkOrder(Optional<Orders> orders) {
         Customer customer = orders.get().getCustomer();
         List<Orders> ordersList = customer.getOrdersList();
         Orders orders1 = new Orders();
@@ -104,12 +133,6 @@ public class CustomerService {
                 break;
             }
         }
-        if (!(orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_PROPOSE)
-                || orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION)))
-            throw new OrderExistenceException("order status not correct!");
-        boolean b = orders1.getOffersList().stream().anyMatch(ofr -> ofr.getExpert().equals(offers.get().getExpert()));
-        if (b) {
-            orders1.setOrderStatus(OrderStatus.WAITING_EXPERT_COMING);
-        }
+        return orders1;
     }
 }

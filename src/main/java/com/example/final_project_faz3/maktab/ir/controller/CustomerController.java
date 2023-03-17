@@ -60,15 +60,6 @@ public class CustomerController {
         return servicesService.getAllServices();
     }
 
-    //    @PostMapping("/addCredit/{customId}")
-//    public void addExpertToSubService(@PathVariable Long customId,
-//                                      @RequestParam(required = false) Long subId) {
-//        try {
-//            adminService.addExpertToSubService(exId, subId);
-//        } catch (ExpertConfirmationException | SubServiceExistenceException | ExpertExistenceException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
     @PostMapping("/postOrder/{customerId}")
     public void submitOrder(@RequestBody Orders orders, @PathVariable Long customerId, @RequestParam(required = false) Long subId) {
         try {
@@ -113,7 +104,7 @@ public class CustomerController {
 
     @GetMapping("/getOfferList/{customerId}")//TODO:sort offerList by expertScore
 
-    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId, @RequestParam(required = false) String sortBy) {
+    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId) {
 
         MySort comparator = new MySort();
 
@@ -137,14 +128,25 @@ public class CustomerController {
             System.out.println(e.getMessage());
         }
     }
+
+    @GetMapping("/changeOrderStatus/{orderId}")
+    public void changeOrderStatus(@PathVariable Long orderId, @RequestParam(required = false) Long offerId) {
+        try {
+            Optional<Orders> orders = Optional.ofNullable(orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order does not exist")));
+            Optional<Offers> offers = offerService.findOfferById(offerId);
+            customerService.changeOrderStatus(orders, offers);
+        } catch (OrderExistenceException | TimeAfterException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 //    @GetMapping("/test")
 //    public UserDto getCustomer(){
 //        Customer customer = new Customer("f", "f", "zed", "ewa");
 //
 //        List<OfferDto> offerDto = new ArrayList<>();
 //        offerDto.add(new OfferDto("aze"));
-//        offerDto.add(new OfferDto("azce"));
-//        offerDto.add(new OfferDto("azcce"));
+//        offerDto.add(new OfferDto("a"));
+//        offerDto.add(new OfferDto("a"));
 //
 //       // UserDto userDto = new UserDto(customer.getFirstName(),customer.getLastName(),customer.getEmailAddress(),offerDto);
 //        UserDto userDto = mapper.map(customer,UserDto.class);
