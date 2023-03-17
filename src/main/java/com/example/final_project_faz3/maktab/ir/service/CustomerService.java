@@ -5,6 +5,7 @@ import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStat
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
+import com.example.final_project_faz3.maktab.ir.exceptions.OrderExistenceException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,7 @@ public class CustomerService {
         this.customerRepository = customerRepository;
         this.commentService = commentService;
         this.expertService = expertService;
+
     }
 
     public void saveCustomer(Customer customer) {
@@ -38,7 +40,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public boolean payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
+    public void payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
         Long credit = customer.getCredit().getBalance();
         Long proposedPrice = orders.getProposedPrice();
         if (credit > proposedPrice) {
@@ -46,7 +48,6 @@ public class CustomerService {
             customer.getCredit().setBalance(l);
             expert.getCredit().setBalance(proposedPrice + expert.getCredit().getBalance());
             orders.setOrderStatus(OrderStatus.PAID);
-            return true;
         }
         throw new CreditNotEnoughException("credit not enough!!");
     }
@@ -89,5 +90,26 @@ public class CustomerService {
             }
         }
         return offersList;
+    }
+
+    @Transactional
+    public void chooseOffer(Optional<Orders> orders, Optional<Offers> offers) throws OrderExistenceException {
+
+        Customer customer = orders.get().getCustomer();
+        List<Orders> ordersList = customer.getOrdersList();
+        Orders orders1 = new Orders();
+        for (Orders value : ordersList) {
+            if (value.getId().equals(orders.get().getId())) {
+                orders1 = value;
+                break;
+            }
+        }
+        if (!(orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_PROPOSE)
+                || orders1.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION)))
+            throw new OrderExistenceException("order status not correct!");
+        boolean b = orders1.getOffersList().stream().anyMatch(ofr -> ofr.getExpert().equals(offers.get().getExpert()));
+        if (b) {
+            orders1.setOrderStatus(OrderStatus.WAITING_EXPERT_COMING);
+        }
     }
 }

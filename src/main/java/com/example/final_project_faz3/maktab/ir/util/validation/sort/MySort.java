@@ -8,6 +8,6 @@ public class MySort implements Comparator<Offers> {
 
     @Override
     public int compare(Offers o1, Offers o2) {
-        return (int) (o1.getProposedPrice()-o2.getProposedPrice());
+        return (int) (o1.getProposedPrice() - o2.getProposedPrice());
     }
 }

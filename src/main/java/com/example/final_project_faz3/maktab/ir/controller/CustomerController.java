@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/customer")
@@ -30,9 +30,11 @@ public class CustomerController {
 
     private final ExpertService expertService;
 
+    private final OfferService offerService;
+
 
     @Autowired
-    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService) {
+    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService, OfferService offerService) {
         this.mapper = mapper;
         this.customerService = customerService;
         this.subServicesService = subServicesService;
@@ -40,6 +42,7 @@ public class CustomerController {
         this.orderService = orderService;
         this.addressService = addressService;
         this.expertService = expertService;
+        this.offerService = offerService;
     }
 
     @PostMapping("/post")
@@ -108,20 +111,31 @@ public class CustomerController {
         customerService.changePassword(customerId, password);
     }
 
-    @GetMapping("/getOfferList/{customerId}")
+    @GetMapping("/getOfferList/{customerId}")//TODO:sort offerList by expertScore
 
-    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId,@RequestParam(required = false)String sortBy ) {
+    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId, @RequestParam(required = false) String sortBy) {
 
         MySort comparator = new MySort();
 
-            List<Offers> offerList = customerService.getOfferList(customerId, orderId,comparator);
+        List<Offers> offerList = customerService.getOfferList(customerId, orderId, comparator);
         List<OffersDto> offersDtoList = new ArrayList<>();
-        for (Offers offers:
-             offerList) {
-            offersDtoList.add(new OffersDto(offers.getDate(),offers.getProposedPrice(),offers.getTimeToStartWork(),offers.getExpert().getId(),offers.getExpert().getFirstName()));
+        for (Offers offers :
+                offerList) {
+            offersDtoList.add(new OffersDto(offers.getDate(), offers.getProposedPrice(), offers.getTimeToStartWork(), offers.getExpert().getId(), offers.getExpert().getFirstName()));
 
         }
         return offersDtoList;
+    }
+
+    @GetMapping("/chooseOffer/{orderId}")
+    public void chooseExpertForOrder(@PathVariable Long orderId, @RequestParam(required = false) Long offerId) {
+        try {
+            Optional<Orders> orders = Optional.ofNullable(orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order does not exist")));
+            Optional<Offers> offers = offerService.findOfferById(offerId);
+            customerService.chooseOffer(orders, offers);
+        } catch (OrderExistenceException e) {
+            System.out.println(e.getMessage());
+        }
     }
 //    @GetMapping("/test")
 //    public UserDto getCustomer(){
