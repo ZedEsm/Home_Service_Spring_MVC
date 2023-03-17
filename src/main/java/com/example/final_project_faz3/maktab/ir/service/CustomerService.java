@@ -6,13 +6,12 @@ import com.example.final_project_faz3.maktab.ir.data.repository.CustomerReposito
 import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
+import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerService {
@@ -75,7 +74,7 @@ public class CustomerService {
         }
     }
 
-    public List<Offers> getOfferList(Long customerId, Long orderId) {
+    public List<Offers> getOfferList(Long customerId, Long orderId, MySort comparator) {
         Optional<Customer> customerById = findCustomerById(customerId);
         List<Offers> offersList = new ArrayList<>();
         if (customerById.isPresent()) {
@@ -85,6 +84,7 @@ public class CustomerService {
                 int i = Math.toIntExact(orderId);
                 Orders orders = ordersList.get(i - 1);
                 offersList.addAll(orders.getOffersList());
+                offersList.sort(comparator);
                 return offersList;
             }
         }

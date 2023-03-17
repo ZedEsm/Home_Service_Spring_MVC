@@ -4,11 +4,13 @@ import com.example.final_project_faz3.maktab.ir.data.dto.OffersDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
 import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.service.*;
+import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -108,8 +110,11 @@ public class CustomerController {
 
     @GetMapping("/getOfferList/{customerId}")
 
-    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId) {
-        List<Offers> offerList = customerService.getOfferList(customerId, orderId);
+    public List<OffersDto> getOfferList(@PathVariable Long customerId, @RequestParam(required = false) Long orderId,@RequestParam(required = false)String sortBy ) {
+
+        MySort comparator = new MySort();
+
+            List<Offers> offerList = customerService.getOfferList(customerId, orderId,comparator);
         List<OffersDto> offersDtoList = new ArrayList<>();
         for (Offers offers:
              offerList) {
