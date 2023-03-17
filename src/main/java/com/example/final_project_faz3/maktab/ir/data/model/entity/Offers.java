@@ -1,7 +1,9 @@
 package com.example.final_project_faz3.maktab.ir.data.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 

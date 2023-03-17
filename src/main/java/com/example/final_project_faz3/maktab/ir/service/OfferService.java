@@ -14,7 +14,7 @@ public class OfferService {
         this.offerRepository = offerRepository;
     }
 
-    public void saveOffer(Offers offers){
-       offerRepository.save(offers);
+    public void saveOffer(Offers offers) {
+        offerRepository.save(offers);
     }
 }

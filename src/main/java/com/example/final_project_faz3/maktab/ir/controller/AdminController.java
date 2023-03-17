@@ -8,7 +8,6 @@ import com.example.final_project_faz3.maktab.ir.exceptions.ExpertConfirmationExc
 import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
 import com.example.final_project_faz3.maktab.ir.exceptions.SubServiceExistenceException;
 import com.example.final_project_faz3.maktab.ir.service.AdminService;
-import com.example.final_project_faz3.maktab.ir.service.ExpertService;
 import com.example.final_project_faz3.maktab.ir.service.ServicesService;
 import com.example.final_project_faz3.maktab.ir.service.SubServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +23,14 @@ public class AdminController {
     private final ServicesService servicesService;
     private final SubServicesService subServicesService;
 
-    private final ExpertService expertService;
-
 
     @Autowired
     public AdminController(AdminService adminService, ServicesService servicesService,
-                           SubServicesService subServicesService, ExpertService expertService) {
+                           SubServicesService subServicesService) {
         this.adminService = adminService;
         this.servicesService = servicesService;
         this.subServicesService = subServicesService;
-        this.expertService = expertService;
+
     }
 
     @GetMapping("/getAdmin/{username}")

@@ -1,9 +1,6 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
-import com.example.final_project_faz3.maktab.ir.data.model.entity.Comment;
-import com.example.final_project_faz3.maktab.ir.data.model.entity.Customer;
-import com.example.final_project_faz3.maktab.ir.data.model.entity.Expert;
-import com.example.final_project_faz3.maktab.ir.data.model.entity.Orders;
+import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
@@ -13,6 +10,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,5 +73,21 @@ public class CustomerService {
             Validation.validatePassword(password);
             customerById.get().setPassword(password);
         }
+    }
+
+    public List<Offers> getOfferList(Long customerId, Long orderId) {
+        Optional<Customer> customerById = findCustomerById(customerId);
+        List<Offers> offersList = new ArrayList<>();
+        if (customerById.isPresent()) {
+            List<Orders> ordersList = customerById.get().getOrdersList();
+            boolean anyMatch = ordersList.stream().anyMatch(order -> order.getId().equals(orderId));
+            if (anyMatch) {
+                int i = Math.toIntExact(orderId);
+                Orders orders = ordersList.get(i - 1);
+                offersList.addAll(orders.getOffersList());
+                return offersList;
+            }
+        }
+        return offersList;
     }
 }

@@ -4,7 +4,9 @@ import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStat
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;

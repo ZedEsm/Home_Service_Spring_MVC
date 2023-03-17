@@ -14,10 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -60,7 +56,7 @@ public class ExpertService {
     }
 
     public void addOffer(Offers offers, Expert expert, Orders orders) {
-        System.out.println("********");
+
         if (expert.getSubServiceList().stream().anyMatch(sub -> sub.getName().equals(orders.getSubService().getName()))) {
             if (checkExpertStatus(orders)) {
                 if (offers.getProposedPrice() > orders.getSubService().getBasePrice()) {

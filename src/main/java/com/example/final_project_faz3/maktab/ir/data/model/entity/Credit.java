@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
