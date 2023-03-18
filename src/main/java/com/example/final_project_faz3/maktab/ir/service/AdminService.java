@@ -36,8 +36,9 @@ public class AdminService {
     public void registerAdmin(Admin admin) throws AdminExistenceException {
         if (getAdmin(admin.getUserName()).isEmpty()) {
             adminRepository.save(admin);
+        } else {
+            throw new AdminExistenceException("admin with this username exist!");
         }
-        throw new AdminExistenceException("admin with this username exist!");
     }
 
     public Optional<Admin> getAdmin(String username) {

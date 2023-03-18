@@ -73,6 +73,7 @@ public class ExpertService {
     private boolean checkExpertStatus(Orders orders) {
         return orders.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_PROPOSE) | orders.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION);
     }
+
     @Transactional
 
     public void expertDone(Optional<Orders> orders, Optional<Offers> offers) throws OrderExistenceException {
@@ -83,6 +84,7 @@ public class ExpertService {
         offers.get().setDate(new Date());
         orders1.setOrderStatus(OrderStatus.DONE);
     }
+
     private Orders checkOrder(Optional<Orders> orders) {
         Customer customer = orders.get().getCustomer();
         List<Orders> ordersList = customer.getOrdersList();
@@ -94,5 +96,11 @@ public class ExpertService {
             }
         }
         return orders1;
+    }
+
+    @Transactional
+    public void pay(Expert expert, Long proposedPrice) {
+        double v = expert.getCredit().getBalance() + 0.7 * proposedPrice;
+        expert.getCredit().setBalance((long) v);
     }
 }

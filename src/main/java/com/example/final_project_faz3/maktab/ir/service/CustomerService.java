@@ -1,12 +1,11 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
+import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentType;
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
-import com.example.final_project_faz3.maktab.ir.exceptions.CreditNotEnoughException;
-import com.example.final_project_faz3.maktab.ir.exceptions.ExpertExistenceException;
-import com.example.final_project_faz3.maktab.ir.exceptions.OrderExistenceException;
-import com.example.final_project_faz3.maktab.ir.exceptions.TimeAfterException;
+import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
 import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
 import jakarta.transaction.Transactional;
@@ -21,13 +20,16 @@ public class CustomerService {
     private final CommentService commentService;
     private final ExpertService expertService;
 
+    private final OfferService offerService;
+
+
     @Autowired
 
-    public CustomerService(CustomerRepository customerRepository, CommentService commentService, ExpertService expertService) {
+    public CustomerService(CustomerRepository customerRepository, CommentService commentService, ExpertService expertService, OfferService offerService) {
         this.customerRepository = customerRepository;
         this.commentService = commentService;
         this.expertService = expertService;
-
+        this.offerService = offerService;
     }
 
     public void saveCustomer(Customer customer) {
@@ -40,18 +42,22 @@ public class CustomerService {
         return customerRepository.findById(id);
     }
 
-    @Transactional
-    public void payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
-        Long credit = customer.getCredit().getBalance();
-        Long proposedPrice = orders.getProposedPrice();
-        if (credit > proposedPrice) {
-            long l = credit - proposedPrice;
-            customer.getCredit().setBalance(l);
-            expert.getCredit().setBalance(proposedPrice + expert.getCredit().getBalance());
-            orders.setOrderStatus(OrderStatus.PAID);
-        }
-        throw new CreditNotEnoughException("credit not enough!!");
+    public Optional<Customer> findCustomerByEmail(String email) {
+        return customerRepository.findCustomerByEmailAddress(email);
     }
+
+//    @Transactional
+//    public void payOrderByCustomer(Customer customer, Orders orders, Expert expert) throws CreditNotEnoughException {
+//        Long credit = customer.getCredit().getBalance();
+//        Long proposedPrice = orders.getProposedPrice();
+//        if (credit > proposedPrice) {
+//            long l = credit - proposedPrice;
+//            customer.getCredit().setBalance(l);
+//            expert.getCredit().setBalance(proposedPrice + expert.getCredit().getBalance());
+//            orders.setOrderStatus(OrderStatus.PAID);
+//        }
+//        throw new CreditNotEnoughException("credit not enough!!");
+//    }
 
 
     public void saveComment(Comment comment, Long expertId, Long subSerViceId) throws ExpertExistenceException {
@@ -134,5 +140,31 @@ public class CustomerService {
             }
         }
         return orders1;
+    }
+
+    @Transactional
+    public void pay(Optional<Customer> customer, Long payment) throws CreditNotEnoughException {
+        Long creditAmount = customer.get().getCredit().getBalance();
+        if (creditAmount < payment)
+            throw new CreditNotEnoughException("credit not enough");
+        customer.get().getCredit().setBalance(creditAmount - payment);
+    }
+
+    @Transactional
+    public void payOrderFromCredit(CreditPaymentDto creditPaymentDto, Optional<Orders> orders) throws CustomerNotFoundException, OrderExistenceException, CreditNotEnoughException {
+        Optional<Customer> customer = Optional.ofNullable(findCustomerByEmail(creditPaymentDto.getCustomerEmail()).orElseThrow(() -> new CustomerNotFoundException("customer not found !")));
+        if (!orders.get().getOrderStatus().equals(OrderStatus.DONE))
+            throw new OrderExistenceException("order not done yet!");
+        System.out.println(creditPaymentDto.getOfferId());
+        Optional<Offers> offerById = Optional.ofNullable(offerService.findOfferById(creditPaymentDto.getOfferId()).orElseThrow(() -> new OrderExistenceException("offer not found")));
+
+        Long proposedPrice = offerById.get().getProposedPrice();
+        if (creditPaymentDto.getPaymentType().equals(PaymentType.CREDIT)) {
+            pay(customer, proposedPrice);
+        }
+        Expert expert = offerById.get().getExpert();
+        expertService.pay(expert, proposedPrice);
+        orders.get().setProposedPrice(proposedPrice);
+        orders.get().setOrderStatus(OrderStatus.PAID);
     }
 }

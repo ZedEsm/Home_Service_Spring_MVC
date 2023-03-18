@@ -22,6 +22,7 @@ public class ExpertController {
     private final OrderService orderService;
 
     private final OfferService offerService;
+
     @Autowired
     public ExpertController(ExpertService expertService,
                             ExpertRepository expertRepository, OrderService orderService, OfferService offerService) {
@@ -48,11 +49,11 @@ public class ExpertController {
     }
 
     @GetMapping("/expertDone/{orderId}")
-    public void expertDone(@PathVariable Long orderId,@RequestParam(required = false)Long offerId ){
+    public void expertDone(@PathVariable Long orderId, @RequestParam(required = false) Long offerId) {
         try {
             Optional<Orders> orders = Optional.ofNullable(orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order does not exist")));
             Optional<Offers> offers = offerService.findOfferById(offerId);
-            expertService.expertDone(orders,offers);
+            expertService.expertDone(orders, offers);
         } catch (OrderExistenceException e) {
             System.out.println(e.getMessage());
         }

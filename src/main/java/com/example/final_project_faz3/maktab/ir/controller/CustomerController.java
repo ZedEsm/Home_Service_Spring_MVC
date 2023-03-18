@@ -1,7 +1,9 @@
 package com.example.final_project_faz3.maktab.ir.controller;
 
+import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OffersDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentType;
 import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.service.*;
 import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
@@ -74,19 +76,19 @@ public class CustomerController {
         addressService.saveAddress(address);
     }
 
-    @PutMapping(path = "/payOrder/{customerId}")
-    public void payOrder(@PathVariable("customerId") Long customerId, @RequestParam(required = false) Long expertId, @RequestParam(required = false) Long orderId) {
-        try {
-            Customer customer = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
-            Orders order = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
-            Expert expert = expertService.findExpertById(expertId);
-            customerService.payOrderByCustomer(customer, order, expert);
-
-        } catch (CustomerNotFoundException | OrderExistenceException | ExpertExistenceException |
-                 CreditNotEnoughException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+//    @PutMapping(path = "/payOrder/{customerId}")
+//    public void payOrder(@PathVariable("customerId") Long customerId, @RequestParam(required = false) Long expertId, @RequestParam(required = false) Long orderId) {
+//        try {
+//            Customer customer = customerService.findCustomerById(customerId).orElseThrow(() -> new CustomerNotFoundException("customer not found exception"));
+//            Orders order = orderService.findOrderById(orderId).orElseThrow(() -> new OrderExistenceException("order not found"));
+//            Expert expert = expertService.findExpertById(expertId);
+//            customerService.payOrderByCustomer(customer, order, expert);
+//
+//        } catch (CustomerNotFoundException | OrderExistenceException | ExpertExistenceException |
+//                 CreditNotEnoughException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
     @PostMapping("/addComment/{expertId}")
     public void addComment(@RequestBody Comment comment, @PathVariable Long expertId, @RequestParam Long subserviceId) {
@@ -139,6 +141,18 @@ public class CustomerController {
             System.out.println(e.getMessage());
         }
     }
+
+    @PostMapping("/creditPayment")
+    public void payOrderFromCredit(@RequestBody CreditPaymentDto creditPaymentDto) {
+        creditPaymentDto.setPaymentType(PaymentType.CREDIT);
+        try {
+            Optional<Orders> orderById = Optional.ofNullable(orderService.findOrderById(creditPaymentDto.getOrderId()).orElseThrow(() -> new OrderExistenceException("order not found!")));
+            customerService.payOrderFromCredit(creditPaymentDto, orderById);
+        } catch (OrderExistenceException | CustomerNotFoundException | CreditNotEnoughException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 //    @GetMapping("/test")
 //    public UserDto getCustomer(){
 //        Customer customer = new Customer("f", "f", "zed", "ewa");
