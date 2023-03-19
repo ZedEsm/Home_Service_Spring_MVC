@@ -1,5 +1,6 @@
 package com.example.final_project_faz3.maktab.ir.controller;
 
+import com.example.final_project_faz3.maktab.ir.data.dto.CommentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OffersDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OnlinePaymentDto;
@@ -185,18 +186,24 @@ public class CustomerController {
             System.out.println(e.getMessage());
         }
 
-        return "Order Payed Online";
+        return "Order Payed";
     }
 
-//    @PostMapping("/addComment")
-//    public void addComment(@RequestBody CommentDto comment){
-//
-//        try {
-//            customerService.addComment(comment);
-//        } catch (OrderExistenceException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
+    @PostMapping("/addComment")
+    public void addComment(@RequestBody CommentDto commentDto){
+
+        try {
+            Comment comment = new Comment();
+            comment.setComment(commentDto.getComment());
+            comment.getCustomer().setEmailAddress(commentDto.getCustomerEmail());
+            comment.getExpert().setPerformance(commentDto.getScore());
+            comment.getOrders().setId(commentDto.getOrderId());
+            mapper.map(comment,CommentDto.class);
+            customerService.addComment(comment);
+        } catch (OrderExistenceException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 //    @GetMapping("/test")
 //    public UserDto getCustomer(){
