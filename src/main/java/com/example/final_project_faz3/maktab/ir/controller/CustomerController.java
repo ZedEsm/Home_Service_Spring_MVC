@@ -28,7 +28,6 @@ import java.util.Optional;
 
 public class CustomerController {
     private final ScoringExpertConverter scoringExpertConverter = new ScoringExpertConverter();
-    private final ModelMapper mapper;
     private final CustomerService customerService;
     private final SubServicesService subServicesService;
     private final ServicesService servicesService;
@@ -39,8 +38,7 @@ public class CustomerController {
 
 
     @Autowired
-    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService, OfferService offerService) {
-        this.mapper = mapper;
+    public CustomerController(CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService, OfferService offerService) {
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.servicesService = servicesService;
@@ -188,7 +186,7 @@ public class CustomerController {
     }
 
     @PostMapping("/addComment")
-    public void addComment(@RequestBody CommentDto commentDto) {
+    public void addComment(@RequestBody CommentDto commentDto) {//TODO:enabled active kon & see comments & add photo to expert handel
 
         try {
             Optional<Customer> customerByEmail = Optional.ofNullable(customerService.findCustomerByEmail(commentDto.getCustomerEmail()).orElseThrow(() -> new CustomerNotFoundException("customer not found!")));
@@ -197,7 +195,7 @@ public class CustomerController {
             Comment comment = getComment(commentDto, customerByEmail, expert);
             comment.setOrders(orderById.get());
             comment.getOrders().setId(commentDto.getOrderId());
-            customerService.addComment(comment,orderById);
+            customerService.addComment(comment, orderById);
         } catch (OrderExistenceException | CustomerNotFoundException | ExpertExistenceException e) {
             System.out.println(e.getMessage());
         }

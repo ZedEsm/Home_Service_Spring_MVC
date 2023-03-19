@@ -23,7 +23,6 @@ public class ScoringExpertConverter implements AttributeConverter<ExpertScore, I
             case FAIR -> 3;
             case GOOD -> 4;
             case EXCELLENT -> 5;
-            default -> throw new IllegalArgumentException(attribute + " not supported.");
         };
     }
 
