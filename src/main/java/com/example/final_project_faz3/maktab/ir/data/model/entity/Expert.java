@@ -37,5 +37,7 @@ public class Expert extends User {
     @ToString.Exclude
     List<Comment> commentList = new ArrayList<>();
 
+    boolean enabled;
+
     double performance;
 }

@@ -2,16 +2,22 @@ package com.example.final_project_faz3.maktab.ir.controller;
 
 import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OffersDto;
+import com.example.final_project_faz3.maktab.ir.data.dto.OnlinePaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentType;
 import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.service.*;
-import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
+import com.example.final_project_faz3.maktab.ir.util.sort.MySort;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,20 +36,18 @@ public class CustomerController {
 
     private final AddressService addressService;
 
-    private final ExpertService expertService;
 
     private final OfferService offerService;
 
 
     @Autowired
-    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService, OfferService offerService) {
+    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, OfferService offerService) {
         this.mapper = mapper;
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.servicesService = servicesService;
         this.orderService = orderService;
         this.addressService = addressService;
-        this.expertService = expertService;
         this.offerService = offerService;
     }
 
@@ -93,6 +97,7 @@ public class CustomerController {
     @PostMapping("/addComment/{expertId}")
     public void addComment(@RequestBody Comment comment, @PathVariable Long expertId, @RequestParam Long subserviceId) {
         try {
+
             customerService.saveComment(comment, expertId, subserviceId);
         } catch (ExpertExistenceException e) {
             System.out.println(e.getMessage());
@@ -152,6 +157,46 @@ public class CustomerController {
             System.out.println(e.getMessage());
         }
     }
+
+    @CrossOrigin
+    @PostMapping("/pay-online")
+    public String payOnline(@Valid @ModelAttribute OnlinePaymentDto onlinePaymentDto, HttpServletRequest request) {
+        CreditPaymentDto creditPaymentDto = new CreditPaymentDto();
+        creditPaymentDto.setPaymentType(PaymentType.ONLINE);
+        creditPaymentDto.setOrderId(onlinePaymentDto.getOrderId());
+        Optional<Orders> orderById = (orderService.findOrderById(creditPaymentDto.getOrderId()));
+
+        try {
+            Date expirationDate = new SimpleDateFormat("yyyy-MM").parse(onlinePaymentDto.getExpirationDate());
+            if (expirationDate.before(new Date()))
+                throw new CardDateExpiredException("card date expired");
+        } catch (ParseException | CardDateExpiredException e) {
+            System.out.println(e.getMessage());
+        }
+        if (!onlinePaymentDto.getCaptcha().equals(request.getSession().getAttribute("captcha")))
+            try {
+                throw new InvalidCaptchaException("captcha is invalid");
+            } catch (InvalidCaptchaException e) {
+                System.out.println(e.getMessage());
+            }
+        try {
+            customerService.payOrderFromCredit(creditPaymentDto, orderById);
+        } catch (CustomerNotFoundException | OrderExistenceException | CreditNotEnoughException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return "Order Payed Online";
+    }
+
+//    @PostMapping("/addComment")
+//    public void addComment(@RequestBody CommentDto comment){
+//
+//        try {
+//            customerService.addComment(comment);
+//        } catch (OrderExistenceException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
 //    @GetMapping("/test")
 //    public UserDto getCustomer(){

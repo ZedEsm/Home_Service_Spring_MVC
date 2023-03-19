@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class ExpertService {
 //        Validation.validateImageFormat(file);
 //        Validation.validatePhotoSize(bytes);
         expert.setExpertScore(ExpertScore.UNCOMMENT_YET);
+        expert.setPerformance(0);
         expert.setExpertStatus(ExpertStatus.NEW);
 //        expert.setPersonalPhoto(bytes);
 //        Validation.validateImageFormat(file);
@@ -83,6 +85,34 @@ public class ExpertService {
 
         offers.get().setDate(new Date());
         orders1.setOrderStatus(OrderStatus.DONE);
+        calculateExpertDelayTime(offers, Optional.of(orders1));
+        System.out.println("zeddddddddd");
+
+
+    }
+    @Transactional
+    private void calculateExpertDelayTime(Optional<Offers> offers,Optional<Orders>orders) {
+        Date start = offers.get().getTimeToStartWork();
+        Date finish = offers.get().getDate();
+
+        Duration duration = Duration.between(start.toInstant(), finish.toInstant());
+
+        orders.get().setDuration(Duration.ZERO.plusDays(1).plusHours(1).plusMinutes(30));
+        long hours = orders.get().getDuration().minus(duration).toHours();
+        System.out.println(hours);
+//        if (hours >= 0)
+//            return;
+
+
+        double averageScore = offers.get().getExpert().getPerformance() - Math.abs(hours);//TODO:get expert score
+        offers.get().getExpert().setPerformance(averageScore);
+        System.out.println(averageScore);
+        if (averageScore < 0) {
+            offers.get().getExpert().setExpertStatus(ExpertStatus.PENDING_CONFIRMATION);
+            offers.get().getExpert().setEnabled(false);
+        }
+
+
     }
 
     private Orders checkOrder(Optional<Orders> orders) {

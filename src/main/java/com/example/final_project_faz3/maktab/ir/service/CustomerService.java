@@ -1,5 +1,6 @@
 package com.example.final_project_faz3.maktab.ir.service;
 
+import com.example.final_project_faz3.maktab.ir.data.dto.CommentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
@@ -7,7 +8,7 @@ import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentTy
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
 import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.util.validation.Validation;
-import com.example.final_project_faz3.maktab.ir.util.validation.sort.MySort;
+import com.example.final_project_faz3.maktab.ir.util.sort.MySort;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class CustomerService {
         this.commentService = commentService;
         this.expertService = expertService;
         this.offerService = offerService;
+
     }
 
     public void saveCustomer(Customer customer) {
@@ -167,4 +169,28 @@ public class CustomerService {
         orders.get().setProposedPrice(proposedPrice);
         orders.get().setOrderStatus(OrderStatus.PAID);
     }
+
+    public void addComment(CommentDto comment) throws OrderExistenceException {
+//        Orders orders = orderService.findOrderById(comment.getOrderId()).orElseThrow(() -> new OrderExistenceException("order not found"));
+//        Customer customer = orders.getCustomer();
+//        if(!orders.getOrderStatus().equals(OrderStatus.PAID))
+//            throw new OrderExistenceException("order not paid");
+//
+//
+
+
+//
+//        Expert expert = customerOrder.getAcceptedExpertOffer().getExpert();
+//        review.setCustomerOrder(customerOrder);
+//        expert.getReviewList().add(review);
+//        double averageScore = 0;
+//        OptionalDouble optionalAverage = expert.getReviewList().stream().mapToInt(Review::getScore).average();
+//        if (optionalAverage.isPresent())
+//            averageScore = optionalAverage.getAsDouble();
+//        expert.setAverageScore(averageScore);
+//        customerOrder.setStatus(OrderStatus.SCORED);
+//        customerOrderRepository.save(customerOrder);
+//        expertService.updateExpert(expert);
+    }
+
 }

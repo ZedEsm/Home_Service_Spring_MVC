@@ -1,4 +1,4 @@
-package com.example.final_project_faz3.maktab.ir.util.validation.sort;
+package com.example.final_project_faz3.maktab.ir.util.sort;
 
 import com.example.final_project_faz3.maktab.ir.data.model.entity.Offers;
 

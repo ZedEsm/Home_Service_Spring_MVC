@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +53,8 @@ public class Orders {
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
 
+
+    private Duration duration;
     @OneToOne
     SubService subService;
 

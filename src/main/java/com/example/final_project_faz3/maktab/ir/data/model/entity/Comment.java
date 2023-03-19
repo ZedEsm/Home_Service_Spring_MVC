@@ -22,5 +22,11 @@ public class Comment {
 
     @Convert(converter = ScoringExpertConverter.class)
     private ExpertScore expertScore;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "orders_id")
+    Orders orders;
 
 }
