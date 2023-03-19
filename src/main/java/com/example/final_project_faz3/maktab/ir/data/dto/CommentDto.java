@@ -18,4 +18,6 @@ public class CommentDto {
     private String comment;
 
     private String customerEmail;
+
+    private Long expertId;
 }

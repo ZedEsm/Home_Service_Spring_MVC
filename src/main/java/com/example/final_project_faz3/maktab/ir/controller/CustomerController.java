@@ -5,6 +5,7 @@ import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OffersDto;
 import com.example.final_project_faz3.maktab.ir.data.dto.OnlinePaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentType;
 import com.example.final_project_faz3.maktab.ir.exceptions.*;
 import com.example.final_project_faz3.maktab.ir.service.*;
@@ -26,29 +27,26 @@ import java.util.Optional;
 @RequestMapping("/customer")
 
 public class CustomerController {
+    private final ScoringExpertConverter scoringExpertConverter = new ScoringExpertConverter();
     private final ModelMapper mapper;
     private final CustomerService customerService;
-
     private final SubServicesService subServicesService;
-
     private final ServicesService servicesService;
-
     private final OrderService orderService;
-
     private final AddressService addressService;
-
-
+    private final ExpertService expertService;
     private final OfferService offerService;
 
 
     @Autowired
-    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, OfferService offerService) {
+    public CustomerController(ModelMapper mapper, CustomerService customerService, SubServicesService subServicesService, ServicesService servicesService, OrderService orderService, AddressService addressService, ExpertService expertService, OfferService offerService) {
         this.mapper = mapper;
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.servicesService = servicesService;
         this.orderService = orderService;
         this.addressService = addressService;
+        this.expertService = expertService;
         this.offerService = offerService;
     }
 
@@ -190,51 +188,32 @@ public class CustomerController {
     }
 
     @PostMapping("/addComment")
-    public void addComment(@RequestBody CommentDto commentDto){
+    public void addComment(@RequestBody CommentDto commentDto) {
 
         try {
-            Comment comment = new Comment();
-            comment.setComment(commentDto.getComment());
-            comment.getCustomer().setEmailAddress(commentDto.getCustomerEmail());
-            comment.getExpert().setPerformance(commentDto.getScore());
+            Optional<Customer> customerByEmail = Optional.ofNullable(customerService.findCustomerByEmail(commentDto.getCustomerEmail()).orElseThrow(() -> new CustomerNotFoundException("customer not found!")));
+            Optional<Orders> orderById = Optional.ofNullable(orderService.findOrderById(commentDto.getOrderId()).orElseThrow(() -> new OrderExistenceException("order not found")));
+            Expert expert = expertService.findExpertById(commentDto.getExpertId());
+            Comment comment = getComment(commentDto, customerByEmail, expert);
+            comment.setOrders(orderById.get());
             comment.getOrders().setId(commentDto.getOrderId());
-            mapper.map(comment,CommentDto.class);
-            customerService.addComment(comment);
-        } catch (OrderExistenceException e) {
+            customerService.addComment(comment,orderById);
+        } catch (OrderExistenceException | CustomerNotFoundException | ExpertExistenceException e) {
             System.out.println(e.getMessage());
         }
     }
 
-//    @GetMapping("/test")
-//    public UserDto getCustomer(){
-//        Customer customer = new Customer("f", "f", "zed", "ewa");
-//
-//        List<OfferDto> offerDto = new ArrayList<>();
-//        offerDto.add(new OfferDto("aze"));
-//        offerDto.add(new OfferDto("a"));
-//        offerDto.add(new OfferDto("a"));
-//
-//       // UserDto userDto = new UserDto(customer.getFirstName(),customer.getLastName(),customer.getEmailAddress(),offerDto);
-//        UserDto userDto = mapper.map(customer,UserDto.class);
-//        return userDto;
-//    }
+    private Comment getComment(CommentDto commentDto, Optional<Customer> customerByEmail, Expert expert) {
+        Comment comment = new Comment();
+        comment.setComment(commentDto.getComment());
+        comment.setCustomer(customerByEmail.get());
+        comment.setExpert(expert);
 
+        comment.getCustomer().setEmailAddress(commentDto.getCustomerEmail());
+        comment.getExpert().setPerformance(commentDto.getScore());
+        ExpertScore expertScore = scoringExpertConverter.convertToEntityAttribute(commentDto.getScore());
+        comment.getExpert().setExpertScore(expertScore);
+
+        return comment;
+    }
 }
-//@AllArgsConstructor
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//class UserDto{
-//    String firstName;
-//    String lastName;
-//    String emailAddress;
-//    List<OfferDto> offerDto;
-//}
-//@AllArgsConstructor
-//
-//@Getter
-//@Setter
-//class OfferDto{
-//    String name;
-//
-//}

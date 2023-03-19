@@ -2,6 +2,7 @@ package com.example.final_project_faz3.maktab.ir.service;
 
 import com.example.final_project_faz3.maktab.ir.data.dto.CreditPaymentDto;
 import com.example.final_project_faz3.maktab.ir.data.model.entity.*;
+import com.example.final_project_faz3.maktab.ir.data.model.enumeration.ExpertScore;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.OrderStatus;
 import com.example.final_project_faz3.maktab.ir.data.model.enumeration.PaymentType;
 import com.example.final_project_faz3.maktab.ir.data.repository.CustomerRepository;
@@ -169,7 +170,18 @@ public class CustomerService {
         orders.get().setOrderStatus(OrderStatus.PAID);
     }
 
-    public void addComment(Comment comment) throws OrderExistenceException {
+    @Transactional
+    public void addComment(Comment comment, Optional<Orders> orderById) throws OrderExistenceException {
+        commentService.saveComment(comment);
+        if (!orderById.get().getOrderStatus().equals(OrderStatus.PAID))
+            throw new OrderExistenceException("order not payed!");
+        Expert expert = comment.getExpert();
+        expert.getCommentList().add(comment);
+        orderById.get().setOrderStatus(OrderStatus.SCORED);
+        expert.setPerformance(comment.getExpert().getPerformance());
+        comment.setExpertScore(comment.getExpert().getExpertScore());
+        expert.setExpertScore(comment.getExpert().getExpertScore());
+
     }
 
 }
